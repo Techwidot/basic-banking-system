@@ -45,20 +45,7 @@ pipeline {
             }
         }
 
-        stage('Finalize') {
-            steps {
-                // Additional steps like notifications or cleanup
-            }
-        }
-    }
-    
-    post {
-        success {
-            // Perform actions on successful deployment
-        }
-        failure {
-            // Perform actions on pipeline failure
-        }
+
     }
 }
 
