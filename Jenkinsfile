@@ -14,11 +14,24 @@ pipeline {
             }            
         }
         
-        stage('Build and Test') {
+        stage('Install Dependencies') {
             steps {
-                // Install Node.js and npm (if not already done)
-                // Use Maven to build and test the Node.js application
-                sh 'mvn -Dmaven.test.failure.ignore=true clean package'
+                // Install Node.js dependencies using npm
+                sh 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Build your Node.js application
+                sh 'npm run build'
+            }
+        }
+
+        stage('Run Application') {
+            steps {
+                // Start your Node.js application (adjust the command as needed)
+                sh 'npm start'
             }
         }
 
