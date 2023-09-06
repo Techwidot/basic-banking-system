@@ -1,16 +1,14 @@
 pipeline {
     agent any
     
-    stage('Checkout Git Repo') {
+    stages {
+        stage('Checkout') {
             steps {
-                script {
-                    // Define the Git URL (HTTP/HTTPS)
-                    def gitURL = 'https://github.com/Techwidot/basic-banking-system.git'
+                // Get some code from a GitHub repository
+            git branch:'main',
+                url:'https://github.com/Techwidot/basic-banking-system.git'
 
-                    // Checkout the Git repository
-                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: gitURL]]])
-                }
-            }
+            }            
         }
         
         stage('Build and Test') {
@@ -63,3 +61,6 @@ pipeline {
         }
     }
 }
+
+        
+
