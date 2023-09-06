@@ -5,7 +5,7 @@ pipeline {
             steps {
                 script {
                     // Define the Git URL (HTTP/HTTPS)
-                    def gitURL = 'https://github.com/your-username/your-repo.git'
+                    def gitURL = 'https://github.com/Techwidot/basic-banking-system.git'
 
                     // Checkout the Git repository
                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: gitURL]]])
