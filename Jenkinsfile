@@ -1,11 +1,15 @@
 pipeline {
     agent any
     
-    stages {
-        stage('Checkout') {
+    stage('Checkout Git Repo') {
             steps {
-                // Checkout the source code from the repository
-                checkout scm
+                script {
+                    // Define the Git URL (HTTP/HTTPS)
+                    def gitURL = 'https://github.com/your-username/your-repo.git'
+
+                    // Checkout the Git repository
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: gitURL]]])
+                }
             }
         }
         
