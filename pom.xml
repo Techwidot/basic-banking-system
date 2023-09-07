@@ -1,72 +1,39 @@
-pipeline {
-    agent any
-    environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('DockerHub')
-        DOCKER_IMAGE_NAME = 'basic-banking'
-        DOCKERFILE_PATH = 'Dockerfile'
-    }
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "M3"
-    }
-    stages {
-        stage('Checkout') {
-            steps {
-                // Get some code from a GitHub repository
-            git branch:'dev',
-                url:'https://github.com/SahuHrithik/basic-banking-system.git'
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
- 
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>your-java-project</artifactId>
+    <version>1.0.0</version>
+<!-- Add properties for Node.js and npm versions -->
+    <properties>
+        <node.version>v14.17.0</node.version>
+        <npm.version>6.14.13</npm.version>
+    </properties>
 
-            }            
-        }
-
-        stage('Build and Test') {
-            steps {
-                // Install Node.js and npm (if not already done)
-                // Use Maven to build and test the Node.js application
-                sh 'mvn clean install'
-            }
-        }
-
- 
-
-        // stage('Static Code Analysis') {
-        //     steps {
-        //         // Run SonarQube analysis
-        //         // Assumes SonarQube is configured in Jenkins
-        //         withSonarQubeEnv('Your_SonarQube_Server') {
-        //             sh 'mvn sonar:sonar'
-        //         }
-        //     }
-        // }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
-                        def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
-                    }
-                }
-            }
-        }
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
-                        customImage.push()
-                    }
-                }
-            }
-        }
-    }
-}
-
- 
-
-        // stage('Deploy (Kubernetes)') {
-        //     steps {
-        //         // Deploy the Docker container to Kubernetes
-        //         sh 'kubectl apply -f kubernetes-deployment.yaml'
-        //     }
-        // }
+    <!-- Add the frontend-maven-plugin -->
+    <build>
+         <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.11.3</version>
+                <executions>
+                    <!-- Install Node.js and npm -->
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
+                        </configuration>
+                    </execution>
+                    <!-- You can add more executions for other npm/yarn commands here -->
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
