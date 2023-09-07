@@ -1,60 +1,72 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <groupId>com.example</groupId>
-    <artifactId>nodejs-app</artifactId>
-    <version>1.0.0</version>
-    
-    <properties>
-        <node.version>v14.17.5</node.version>
-        <npm.version>6.14.14</npm.version>
-    </properties>
+pipeline {
+    agent any
+    environment {
+        DOCKER_REGISTRY_CREDENTIALS = credentials('DockerHub')
+        DOCKER_IMAGE_NAME = 'basic-banking'
+        DOCKERFILE_PATH = 'Dockerfile'
+    }
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                // Get some code from a GitHub repository
+            git branch:'dev',
+                url:'https://github.com/SahuHrithik/basic-banking-system.git'
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.11.2</version>
-                <configuration>
-                    <nodeVersion>${node.version}</nodeVersion>
-                    <npmVersion>${npm.version}</npmVersion>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <nodeVersion>${node.version}</nodeVersion>
-                            <npmVersion>${npm.version}</npmVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm run build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-</project>
+ 
+
+            }            
+        }
+
+        stage('Build and Test') {
+            steps {
+                // Install Node.js and npm (if not already done)
+                // Use Maven to build and test the Node.js application
+                sh 'mvn clean install'
+            }
+        }
+
+ 
+
+        // stage('Static Code Analysis') {
+        //     steps {
+        //         // Run SonarQube analysis
+        //         // Assumes SonarQube is configured in Jenkins
+        //         withSonarQubeEnv('Your_SonarQube_Server') {
+        //             sh 'mvn sonar:sonar'
+        //         }
+        //     }
+        // }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
+                        def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
+                    }
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
+                        customImage.push()
+                    }
+                }
+            }
+        }
+    }
+}
+
+ 
+
+        // stage('Deploy (Kubernetes)') {
+        //     steps {
+        //         // Deploy the Docker container to Kubernetes
+        //         sh 'kubectl apply -f kubernetes-deployment.yaml'
+        //     }
+        // }
