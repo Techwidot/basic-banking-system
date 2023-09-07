@@ -14,7 +14,7 @@ pipeline {
             steps {
                 // Get some code from a GitHub repository
             git branch:'dev',
-                url:'https://github.com/SahuHrithik/basic-banking-system.git'
+                url:'https://github.com/Techwidot/basic-banking-system.git'
 
  
 
