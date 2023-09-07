@@ -41,22 +41,12 @@ pipeline {
         //     }
         // }
 
-        stage('Build Docker Image') {
+        stage('Containerize (Docker)') {
             steps {
-                script {
-                    docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
-                        def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
-                    }
-                }
-            }
-        }
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.example.com', DOCKER_REGISTRY_CREDENTIALS) {
-                        customImage.push()
-                    }
-                }
+                // Build a Docker image for the Node.js app
+                sh 'sudo docker build -t basic-banking .'
+                // Push the Docker image to a registry (if needed)
+                // sh 'docker push your-docker-image-name'
             }
         }
     }
